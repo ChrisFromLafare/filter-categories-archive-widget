@@ -1,10 +1,11 @@
 <?php
-/*
-Plugin Name: TA Widget Archive  Plugin
-Description: This plugin adds a widget allowing filtered archive lists.
-Version: 1.0
-Author: C. ARNAUD (christian.arnaud@technicatome.com)
-License: GPL2
+/**
+ * Plugin Name: TA Widget Archive  Plugin
+ * Description: This plugin adds a widget allowing filtered archive lists.
+ * Version: 1.0
+ * Author: C. ARNAUD (christian.arnaud@technicatome.com)
+ * License: GPL2
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 // The widget class
