@@ -9,8 +9,12 @@
 */
 
 // The widget class
-class TAINTRANET_FilterArchive_Widget extends WP_Widget {
 
+/**
+ * Class TAINTRANET_FilterArchive_Widget
+ *
+ */
+class TAINTRANET_FilterArchive_Widget extends WP_Widget {
 	// Main constructor
 	public function __construct() {
 		parent::__construct(
@@ -34,6 +38,12 @@ class TAINTRANET_FilterArchive_Widget extends WP_Widget {
 		);
 		
 		// Parse current settings with defaults
+        /**
+         * @var string $title
+         * @var array $selected_categories
+         * @var bool $hierarchical
+         * @var int $count
+         */
 		extract( wp_parse_args( ( array ) $instance, $defaults ) );
 		$categories = get_categories();
 		?>
@@ -46,29 +56,29 @@ class TAINTRANET_FilterArchive_Widget extends WP_Widget {
         <?php // Widget hierarchy ?>
         <p>
             <input id="<?php echo esc_attr($this->get_field_id( 'hierarchical' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'hierarchical' ) ); ?>" type="checkbox" value="1" <?php checked( '1', $hierarchical ); ?> />
-            <label for="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>"><?php echo _e('Show hierarchy', 'TAINTRANET_domain'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id( 'hierarchical' ) ); ?>"><?php _e('Show hierarchy', 'TAINTRANET_domain'); ?></label>
         </p>
         <?php // Widget count ?>
         <p>
             <input id="<?php echo esc_attr($this->get_field_id( 'count' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'count' ) ); ?>" type="checkbox" value="1" <?php checked( '1', $count ); ?> />
-            <label for="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>"><?php echo _e('Show count', 'TAINTRANET_domain'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id( 'count' ) ); ?>"><?php _e('Show count', 'TAINTRANET_domain'); ?></label>
         </p>
         <p>
-            <label <?php echo _e('Select categories to display', 'TAINTRANET_domain'); ?></label>
+            <label <?php _e('Select categories to display', 'TAINTRANET_domain'); ?>></label>
         </p>
         <?php // a checkbox for each category
         foreach ($categories as $category) :
             $check_val = isset($selected_categories[$category->slug])?$selected_categories[$category->slug]:'0';?>
             <p>
                 <input id="<?php echo esc_attr($this->get_field_id( $category->slug ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( $category->slug ) ); ?>" type="checkbox" value="1" <?php checked( '1', $check_val ); ?> />
-                <label for="<?php echo esc_attr( $this->get_field_id( $category->slug ) ); ?>"><?php echo $category->name; ?></label>
+                <label for="<?php echo esc_attr($this->get_field_id( $category->slug ) ); ?>"><?php echo $category->name; ?></label>
             </p>
         <?php endforeach; ?>
 	<?php }
 
 	// Update widget settings
 	public function update( $new_instance, $old_instance ) {
-	    $instance=[];
+	    $instance=array();
 	    foreach ($new_instance as $key => $value) {
 	        switch ($key) {
                 case 'title':
@@ -87,10 +97,22 @@ class TAINTRANET_FilterArchive_Widget extends WP_Widget {
 		return $instance;
 	}
 
-	// Display the widget
+    /**
+     * Display widget
+     *
+     * @param array $args
+     * @param array $instance
+     *
+     */
 	public function widget( $args, $instance ) {
+        /**
+         * @var string $before_widget
+         * @var string $before_title
+         * @var string $after_title
+         * @var string $after_widget
+        */
 
-		extract( $args );
+        extract( $args );
 
 		// Check the widget options
 		$title    = isset( $instance['title'] ) ? apply_filters( 'widget_title', $instance['title'] ) : '';
@@ -98,11 +120,14 @@ class TAINTRANET_FilterArchive_Widget extends WP_Widget {
 		$hierarchical = isset( $instance['hierarchical'] ) ? $instance['hierarchical'] : 0;
 		// prepare the list of categories id to be selected
         $categories_id = [];
-		foreach ($instance['selected_categories'] as $key => $value){
-            $categories_id[]=get_cat_ID($key);
+        if (isset($instance['selected_categories'])) {
+            foreach ($instance['selected_categories'] as $key => $value) {
+                if ($cat_obj = get_category_by_slug($key))
+                    $categories_id[] = $cat_obj->term_id;
+            }
         }
 		// WordPress core before_widget hook (always include )
-		echo $before_widget;
+        echo $before_widget;
 
 		// Display the widget
 		echo '<div class="widget-text wp_widget_plugin_box">';
@@ -138,4 +163,5 @@ class TAINTRANET_FilterArchive_Widget extends WP_Widget {
 function TAINTRANET_FilterArchive_Widget() {
 	register_widget( 'TAINTRANET_FilterArchive_Widget' );
 }
+/** @uses TAINTRANET_FilterArchive_Widget() */
 add_action( 'widgets_init', 'TAINTRANET_FilterArchive_Widget' );
